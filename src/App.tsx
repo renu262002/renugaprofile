@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Github, 
   Mail, 
@@ -16,7 +16,9 @@ import {
   Award, 
   Briefcase,
   ChevronRight,
-  Download
+  Download,
+  Menu,
+  X
 } from 'lucide-react';
 
 const skills = [
@@ -102,25 +104,80 @@ const projects = [
 ];
 
 export default function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navLinks = [
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Education', href: '#education' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
   return (
-    <div className="min-h-screen selection:bg-accent selection:text-white bg-surface text-primary">
+    <div className="min-h-screen bg-surface text-primary selection:bg-accent selection:text-white">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="text-xl font-bold tracking-tighter text-white">RENUAGDEVI.R</span>
+        <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+          <motion.span 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-xl font-bold tracking-tighter text-white"
+          >
+            RENUAGDEVI.R
+          </motion.span>
+          
+          {/* Desktop Nav */}
           <div className="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#about" className="text-slate-400 hover:text-accent transition-colors">About</a>
-            <a href="#skills" className="text-slate-400 hover:text-accent transition-colors">Skills</a>
-            <a href="#projects" className="text-slate-400 hover:text-accent transition-colors">Projects</a>
-            <a href="#experience" className="text-slate-400 hover:text-accent transition-colors">Experience</a>
-            <a href="#education" className="text-slate-400 hover:text-accent transition-colors">Education</a>
-            <a href="#contact" className="text-slate-400 hover:text-accent transition-colors">Contact</a>
+            {navLinks.map((link) => (
+              <a 
+                key={link.name} 
+                href={link.href} 
+                className="text-slate-400 hover:text-accent transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden text-white p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Nav Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-slate-950 border-b border-white/5 overflow-hidden"
+            >
+              <div className="flex flex-col p-6 space-y-4">
+                {navLinks.map((link) => (
+                  <a 
+                    key={link.name} 
+                    href={link.href} 
+                    className="text-slate-400 hover:text-accent transition-colors text-lg font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-40 pb-24 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section className="pt-32 md:pt-48 pb-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -129,18 +186,18 @@ export default function App() {
           <span className="inline-block px-4 py-1 rounded-full bg-accent/10 text-accent text-xs font-bold tracking-wider uppercase mb-6 border border-accent/20">
             Computer Science Engineer
           </span>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[0.9]">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-[0.9]">
             Full Stack <br />
             <span className="text-accent">Developer</span>.
           </h1>
-          <p className="text-slate-400 text-lg mb-10 max-w-lg leading-relaxed">
+          <p className="text-slate-400 text-lg md:text-xl mb-10 max-w-lg leading-relaxed">
             To utilize acquired knowledge in computer science to develop innovative software solutions and contribute to cutting-edge technological advancements.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href="#contact" className="px-8 py-4 bg-accent text-white rounded-2xl font-semibold hover:bg-accent/80 transition-all shadow-lg shadow-accent/20">
+            <a href="#contact" className="w-full sm:w-auto px-8 py-4 bg-accent text-white rounded-2xl font-semibold hover:bg-accent/80 transition-all shadow-lg shadow-accent/20 text-center">
               Get in touch
             </a>
-            <button className="px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-semibold hover:bg-white/10 transition-all flex items-center gap-2">
+            <button className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2">
               <Download size={18} />
               Download CV
             </button>
@@ -151,7 +208,7 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative"
+          className="relative order-first md:order-last"
         >
           <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-800 relative z-10 border border-white/10">
             <img 
@@ -161,27 +218,37 @@ export default function App() {
               referrerPolicy="no-referrer"
             />
           </div>
-          <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-accent/20 rounded-full blur-[100px] -z-0" />
-          <div className="absolute -top-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] -z-0" />
+          <div className="absolute -bottom-10 -right-10 w-48 md:w-64 h-48 md:h-64 bg-accent/20 rounded-full blur-[80px] md:blur-[100px] -z-0" />
+          <div className="absolute -top-10 -left-10 w-48 md:w-64 h-48 md:h-64 bg-blue-500/10 rounded-full blur-[80px] md:blur-[100px] -z-0" />
         </motion.div>
       </section>
 
       {/* About Section */}
       <section id="about" className="section-padding border-y border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-16">
-            <div className="md:col-span-1">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-1"
+            >
               <h2 className="text-4xl font-bold mb-6">About Me</h2>
               <div className="w-16 h-1 bg-accent rounded-full" />
-            </div>
-            <div className="md:col-span-2 space-y-8 text-slate-400 text-xl leading-relaxed font-light">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 space-y-8 text-slate-400 text-lg md:text-xl leading-relaxed font-light"
+            >
               <p>
                 I am a passionate Computer Science Engineer with a strong foundation in frontend development. My journey in tech is driven by a desire to create intuitive and efficient web solutions that solve real-world problems.
               </p>
               <p>
                 During my internship at Aroganam Technologies, I honed my skills in React JS and modern UI libraries, delivering projects like the IMF Web Application and CropSmile Agriculture Platform.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -189,13 +256,24 @@ export default function App() {
       {/* Skills Section */}
       <section id="skills" className="section-padding">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold mb-16 text-center">Technical Expertise</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl font-bold mb-16 text-center"
+          >
+            Technical Expertise
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {skills.map((skill, idx) => (
               <motion.div 
                 key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -8, backgroundColor: 'rgba(255,255,255,0.03)' }}
-                className="p-10 rounded-[2rem] card-bg transition-all"
+                className="p-8 md:p-10 rounded-[2rem] card-bg transition-all"
               >
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold text-xl text-white">{skill.name}</h3>
@@ -213,17 +291,24 @@ export default function App() {
             ))}
             
             {/* Certificates */}
-            <div className="lg:col-span-3 mt-20">
+            <div className="sm:col-span-2 lg:col-span-3 mt-16 md:mt-20">
               <h3 className="text-2xl font-bold mb-10 flex items-center gap-3 text-white">
                 <Award className="text-accent" />
                 Certifications
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {certificates.map((cert, idx) => (
-                  <div key={idx} className="p-6 rounded-2xl card-bg text-sm font-medium flex items-start gap-4 hover:border-accent/30 transition-colors">
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="p-6 rounded-2xl card-bg text-sm font-medium flex items-start gap-4 hover:border-accent/30 transition-colors"
+                  >
                     <ChevronRight className="text-accent mt-0.5 shrink-0" size={18} />
                     <span className="text-slate-300">{cert}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -234,7 +319,7 @@ export default function App() {
       {/* Projects Section */}
       <section id="projects" className="section-padding border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
             <div>
               <h2 className="text-4xl font-bold mb-4">My Projects</h2>
               <p className="text-slate-400 text-lg max-w-xl font-light">
@@ -244,14 +329,15 @@ export default function App() {
             <div className="w-20 h-1 bg-accent rounded-full hidden md:block" />
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group rounded-[2.5rem] overflow-hidden card-bg hover:border-accent/30 transition-all"
+                className="group rounded-[2.5rem] overflow-hidden card-bg hover:border-accent/30 transition-all flex flex-col"
               >
                 <div className="aspect-video overflow-hidden relative">
                   <img 
@@ -267,14 +353,14 @@ export default function App() {
                     </a>
                   </div>
                 </div>
-                <div className="p-8">
+                <div className="p-8 flex-1 flex flex-col">
                   <h3 className="text-xl font-bold text-white mb-3 group-hover:text-accent transition-colors">
                     {project.title}
                   </h3>
                   <p className="text-slate-400 text-sm mb-6 leading-relaxed line-clamp-3">
                     {project.description}
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="mt-auto flex flex-wrap gap-2">
                     {project.tags.map((tag, tIdx) => (
                       <span key={tIdx} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         {tag}
@@ -292,13 +378,13 @@ export default function App() {
       <section id="experience" className="section-padding border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-16">Professional Experience</h2>
-          <div className="space-y-24">
+          <div className="space-y-20 md:space-y-24">
             {experience.map((exp, idx) => (
-              <div key={idx} className="relative pl-12 border-l border-white/10">
+              <div key={idx} className="relative pl-8 md:pl-12 border-l border-white/10">
                 <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_10px_rgba(56,189,248,0.8)]" />
-                <div className="flex flex-wrap justify-between items-start mb-8 gap-6">
+                <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                   <div>
-                    <h3 className="text-3xl font-bold text-white mb-2">{exp.role}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{exp.role}</h3>
                     <p className="text-accent font-semibold flex items-center gap-2 text-lg">
                       <Briefcase size={20} />
                       {exp.company}
@@ -312,9 +398,15 @@ export default function App() {
                   {exp.description}
                 </p>
                 
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                   {exp.projects.map((project, pIdx) => (
-                    <div key={pIdx} className="p-8 rounded-[2.5rem] card-bg hover:border-accent/20 transition-all">
+                    <motion.div 
+                      key={pIdx} 
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      className="p-8 rounded-[2.5rem] card-bg hover:border-accent/20 transition-all"
+                    >
                       <h4 className="font-bold text-xl mb-6 flex items-center gap-3 text-white">
                         <Code2 className="text-accent" size={24} />
                         {project.name}
@@ -327,7 +419,7 @@ export default function App() {
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -343,14 +435,15 @@ export default function App() {
             <GraduationCap className="text-accent" size={40} />
             Education
           </h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid sm:grid-cols-2 gap-8">
             {education.map((edu, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ delay: idx * 0.2 }}
-                className="p-10 rounded-[2.5rem] card-bg group hover:border-accent/40 transition-all"
+                className="p-8 md:p-10 rounded-[2.5rem] card-bg group hover:border-accent/40 transition-all"
               >
                 <span className="text-accent font-mono text-sm mb-4 block tracking-widest">{edu.period}</span>
                 <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-accent transition-colors">{edu.institution}</h3>
@@ -367,67 +460,67 @@ export default function App() {
       {/* Contact Section */}
       <section id="contact" className="section-padding">
         <div className="max-w-7xl mx-auto">
-          <div className="card-bg rounded-[3.5rem] p-12 md:p-24 overflow-hidden relative">
+          <div className="card-bg rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-16 lg:p-24 overflow-hidden relative">
             <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-accent/5 rounded-full blur-[120px] -mr-80 -mt-80" />
             
-            <div className="grid lg:grid-cols-2 gap-24 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-16 md:gap-24 relative z-10">
               <div>
-                <h2 className="text-5xl font-bold mb-8 leading-tight">Let's build <br />something great.</h2>
-                <p className="text-slate-400 text-xl mb-16 font-light leading-relaxed">
+                <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">Let's build <br className="hidden md:block" />something great.</h2>
+                <p className="text-slate-400 text-lg md:text-xl mb-12 md:mb-16 font-light leading-relaxed">
                   I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.
                 </p>
                 
                 <div className="space-y-8">
                   <div className="flex items-center gap-6 group">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
                       <Mail size={24} />
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 uppercase font-bold tracking-[0.2em] mb-1">Email</p>
-                      <a href="mailto:ranuga262004@gmail.com" className="text-xl font-bold text-white hover:text-accent transition-colors">
+                      <a href="mailto:ranuga262004@gmail.com" className="text-lg md:text-xl font-bold text-white hover:text-accent transition-colors break-all">
                         ranuga262004@gmail.com
                       </a>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-6 group">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
                       <Phone size={24} />
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 uppercase font-bold tracking-[0.2em] mb-1">Phone</p>
-                      <p className="text-xl font-bold text-white">7826935308</p>
+                      <p className="text-lg md:text-xl font-bold text-white">7826935308</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-6 group">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-white transition-all">
                       <MapPin size={24} />
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 uppercase font-bold tracking-[0.2em] mb-1">Location</p>
-                      <p className="text-xl font-bold text-white">TamilNadu Sivakasi</p>
+                      <p className="text-lg md:text-xl font-bold text-white">TamilNadu Sivakasi</p>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <form className="space-y-8">
-                <div className="grid md:grid-cols-2 gap-8">
+              <form className="space-y-6 md:space-y-8" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                   <div className="space-y-3">
                     <label className="text-sm font-bold text-slate-400 tracking-wider">NAME</label>
-                    <input type="text" className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" placeholder="John Doe" />
+                    <input type="text" className="w-full px-6 md:px-8 py-4 md:py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" placeholder="John Doe" />
                   </div>
                   <div className="space-y-3">
                     <label className="text-sm font-bold text-slate-400 tracking-wider">EMAIL</label>
-                    <input type="email" className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" placeholder="john@example.com" />
+                    <input type="email" className="w-full px-6 md:px-8 py-4 md:py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" placeholder="john@example.com" />
                   </div>
                 </div>
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-slate-400 tracking-wider">MESSAGE</label>
-                  <textarea rows={5} className="w-full px-8 py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all resize-none" placeholder="How can I help you?" />
+                  <textarea rows={5} className="w-full px-6 md:px-8 py-4 md:py-5 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all resize-none" placeholder="How can I help you?" />
                 </div>
-                <button className="w-full py-6 bg-accent text-white rounded-2xl font-bold hover:bg-accent/80 transition-all shadow-2xl shadow-accent/20 flex items-center justify-center gap-3 text-lg">
+                <button className="w-full py-5 md:py-6 bg-accent text-white rounded-2xl font-bold hover:bg-accent/80 transition-all shadow-2xl shadow-accent/20 flex items-center justify-center gap-3 text-lg">
                   Send Message
                   <ChevronRight size={24} />
                 </button>
@@ -438,8 +531,8 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+      <footer className="py-12 md:py-16 px-6 border-t border-white/5">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-center md:text-left">
             <span className="text-2xl font-bold tracking-tighter text-white block mb-2">RENUAGDEVI.R</span>
             <p className="text-slate-500 text-sm">
